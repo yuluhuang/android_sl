@@ -2,8 +2,10 @@ package com.web.android_sl;
 
 import javax.security.auth.PrivateCredentialPermission;
 
+import com.web.android_sl.db.SessionService;
 import com.web.android_sl.http.HttpUtils;
 
+import android.R.string;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +24,8 @@ import android.widget.Toast;
 
 public class login extends Activity {
 
+	private SessionService sessionService;
+	private String sessionId;
 	private Button loginBtn = null;
 	private EditText username = null;
 	private EditText password = null;
@@ -36,6 +40,7 @@ public class login extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
+		sessionService = new SessionService(this);
 		init();
 		loginBtn = (Button) findViewById(R.id.login);
 
@@ -63,9 +68,15 @@ public class login extends Activity {
 
 					@Override
 					public void run() {
-						HttpUtils.login(path, name, pwd);
+						sessionId = HttpUtils.login(path, name, pwd);
+
 					}
 				}).start();
+				//数据库操作不能在子线程中？
+				long a = sessionService.update(sessionId, "1");
+				if (a > 0) {
+					Toast.makeText(getApplicationContext(), "保存成功", 1).show();
+				}
 			}
 		});
 

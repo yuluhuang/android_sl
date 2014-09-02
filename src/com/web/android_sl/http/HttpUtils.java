@@ -20,9 +20,12 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.xml.sax.InputSource;
 
+import com.web.android_sl.login;
+import com.web.android_sl.db.SessionService;
 import com.web.android_sl.json.JsonTools;
 
 import android.R.integer;
+import android.content.Context;
 import android.preference.PreferenceActivity.Header;
 import android.util.Log;
 
@@ -38,7 +41,8 @@ public class HttpUtils {
 	//
 	// }
 
-	public static void login(String path, String userName, String password) {
+	public static String login(String path, String userName, String password) {
+		String sessionId = "";
 		try {
 
 			HttpClient httpClient = new DefaultHttpClient();
@@ -57,29 +61,28 @@ public class HttpUtils {
 			try {
 				response = httpClient.execute(httpPost);
 				if (response.getStatusLine().getStatusCode() == 200) {
-					
+
 					String result = EntityUtils.toString(response.getEntity(),
 							"UTF-8");
-					Log.i("string", result);
-					String value=JsonTools.getKey("code", result);
-					//登录成功
-					if(value=="000000"){
+					// Log.i("string", result);
+					String values = JsonTools.getKey("code", result);
+					Log.i("string", values);
+					// 登录成功
+					if (values.equals("000000")) {
+
 						org.apache.http.Header[] cookie = response
 								.getHeaders("Set-Cookie");
 
-						String aString = cookie[0].toString();
-						Log.i("string", aString);
+						sessionId = cookie[0].getValue().toString().split(";")[0]
+								.toString();
+						Log.i("string", sessionId);
+						// TODO
+//						 SessionService sessionService=new
+//						 SessionService(null);
+//						 sessionService.save(sessionId);
+						return sessionId;
+
 					}
-					
-
-
-
-					// org.apache.http.Header[] B=response.getAllHeaders();
-					//HttpEntity httpEntity = response.getEntity();
-					// InputStream inputStream =
-					// response.getEntity().getContent();
-					
-
 				}
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
@@ -93,5 +96,7 @@ public class HttpUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return sessionId;
 	}
+
 }
