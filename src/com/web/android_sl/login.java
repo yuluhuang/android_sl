@@ -1,63 +1,58 @@
 package com.web.android_sl;
 
-import javax.security.auth.PrivateCredentialPermission;
-
 import com.web.android_sl.db.SessionService;
 import com.web.android_sl.http.HttpUtils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 public class login extends Activity {
 
-	private Handler handler=new Handler(){
+	@SuppressLint("HandlerLeak")
+	private Handler handler = new Handler() {
 		public void handleMessage(Message msg) {
-			//byte[]data=(byte[])msg.obj;
-			//Bitmap bitmap=BitmapFactory.decodeByteArray(data, 0, data.length);
-			//ImageView.setImageBitmap(bitmap);
-			if(msg.what==0){
+			// byte[]data=(byte[])msg.obj;
+			// Bitmap bitmap=BitmapFactory.decodeByteArray(data, 0,
+			// data.length);
+			// ImageView.setImageBitmap(bitmap);
+			if (msg.what == 0) {
 				Toast.makeText(getApplicationContext(), "登录成功", 1).show();
 
 				Intent intent = new Intent(login.this, index.class);
 				startActivity(intent);
 			}
 		};
-		
+
 	};
-	
-	private SessionService sessionService;
+
 	private Button loginBtn = null;
 	private EditText username = null;
 	private EditText password = null;
 	private CheckBox boxRem = null;
-
 	private String name;
 	private String pwd;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.login);
-		sessionService=new SessionService(getApplicationContext());
+		new SessionService(getApplicationContext());
 		init();
 		loginBtn = (Button) findViewById(R.id.login);
 
@@ -80,21 +75,20 @@ public class login extends Activity {
 					editor.commit();
 				}
 
-				
 				new Thread(new Runnable() {
 
 					@Override
 					public void run() {
 
-						boolean a=HttpUtils.login(name, pwd);// session
+						boolean a = HttpUtils.login(name, pwd);// session
 						if (a) {
-							Message message=Message.obtain();
-							//message.obj=databaseList();
-							message.what=0;
+							Message message = Message.obtain();
+							// message.obj=databaseList();
+							message.what = 0;
 							handler.sendMessage(message);
 						}
 					}
-				}).start();		
+				}).start();
 			}
 		});
 	}
@@ -126,11 +120,23 @@ public class login extends Activity {
 		// 获取活动的网络连接信息
 		NetworkInfo info = connMgr.getActiveNetworkInfo();
 		// 判断
-		if (info != null || info.isAvailable()) {
-
-		} else {
+		if (!(info!=null && info.isAvailable())){
 			Toast.makeText(getApplicationContext(), "网络不可用", 1).show();
 		}
+
+		// ConnectivityManager connMgr = (ConnectivityManager)
+		// getSystemService(Context.CONNECTIVITY_SERVICE);
+		// android.net.NetworkInfo wifi = connMgr
+		// .getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		// android.net.NetworkInfo mobile = connMgr
+		// .getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		// if (wifi!=null && wifi.isAvailable()) {
+		// Toast.makeText(getApplicationContext(), "正在使用wifi", 1).show();
+		// } else if (mobile!=null && mobile.isAvailable()) {
+		// Toast.makeText(getApplicationContext(), "正在使用流量", 1).show();
+		// } else {
+		// Toast.makeText(getApplicationContext(), "网络不可用", 1).show();
+		// }
 
 	}
 }

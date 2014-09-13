@@ -1,143 +1,102 @@
 package com.web.android_sl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
+import java.util.List;
+import com.web.android_sl.domain.Theme;
 import com.web.android_sl.domain.User;
 import com.web.android_sl.http.HttpUtils;
 import com.web.android_sl.json.JsonTools;
-
-import android.R.integer;
+import com.web.android_sl.myAdapter.themeAdapter;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
 public class home extends Activity {
 	private TextView textView1;
 	private TextView textView2;
-	private ImageView imageView;
+	private ImageView useIcon;
+	private ListView listView1;
 	private ProgressDialog dialog;
-	User user;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
+		// 初始化个人信息
 		textView1 = (TextView) findViewById(R.id.textView1);
 		textView2 = (TextView) findViewById(R.id.textView2);
-		imageView=(ImageView)findViewById(R.id.imageView1);
+		useIcon = (ImageView) findViewById(R.id.useIcon);
+		listView1 = (ListView) findViewById(R.id.listView1);
+		// 提示 设置
 		dialog = new ProgressDialog(this);
 		dialog.setTitle("提示");
 		dialog.setMessage("正在加载，请稍后");
 		dialog.setCancelable(false);// 点击屏幕也不消失
-//		new Thread(new Runnable() {
-//
-//			@Override
-//			public void run() {
-				// TODO Auto-generated method stub
-				String info = HttpUtils.getUserInfo();
-			    user = JsonTools.getUser(info);
-				textView1.setText(user.getName());
-				textView2.setText(user.getMotto());
+		new MyTask().execute();
 
-				Log.i("string", info);
-				
-//			}
-//		}).start();
-		new MyTask().execute("");
 	}
 
-	public class MyTask extends AsyncTask<String, Integer, Bitmap> {
+	public class MyTask extends AsyncTask<String, Void, User> {
 
 		@Override
-		protected Bitmap doInBackground(String... params) {
-			// TODO Auto-generated method stub
-			Bitmap bitmap = null;
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			InputStream inputStream = null;
-			HttpClient httpClient = new DefaultHttpClient();
-			HttpGet httpGet = new HttpGet("http://nsb-cdn.b0.upaiyun.com/avatars/16/5c/165c3edb63_medium.jpg");
-			HttpResponse httpResponse;
-			try {
-				httpResponse = httpClient.execute(httpGet);
-				if (httpResponse.getStatusLine().getStatusCode() == 200) {
-					inputStream = httpResponse.getEntity().getContent();
-					long file_length=httpResponse.getEntity().getContentLength();
-					int len=0;
-					byte[] data =new byte[1024];
-					int total_length=0;
-					while((len=inputStream.read(data))!=-1){
-						total_length+=len;
-						int value=(int)((total_length/(float)file_length)*100);
-						publishProgress(value);
-						outputStream.write(data,0,len);
-					}
-					byte [] result=outputStream.toByteArray();
-					bitmap=BitmapFactory.decodeByteArray(result, 0, result.length);
-					
-					
-				}
-
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			finally {
-				if (inputStream != null) {
-					try {
-						inputStream.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			return bitmap;
+		protected User doInBackground(String... params) {
+			String info = HttpUtils.getUserInfo();// 获得用户信息
+			User user = JsonTools.getUser(info);// 转成对象
+			
+			return user;
 		}
 
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
-
 			dialog.show();
 		}
 
 		@Override
-		protected void onPostExecute(Bitmap result) {
+		protected void onPostExecute(User user) {
 			// TODO Auto-generated method stub
-			super.onPostExecute(result);
-			dialog.dismiss();
-			imageView.setImageBitmap(result);
-		}
-
-		@Override
-		protected void onProgressUpdate(Integer... values) {
-			// TODO Auto-generated method stub
-			super.onProgressUpdate(values);
-			dialog.setProgress(values[0]);
+			super.onPostExecute(user);
 			
+			// 填充用户信息
+			textView1.setText(user.getName().toString());
+			textView2.setText(user.getMotto().toString());
+	
+			// 获取适配器数据 用户创建的theme 列表
+			final List<Theme> themeList = user.getTheme();
+			themeAdapter adapter = new themeAdapter(home.this, themeList,
+					R.layout.home_bottom);
+
+			listView1.setAdapter(adapter);
+
+			listView1.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					// TODO Auto-generated method stub
+
+					Theme theme = themeList.get(position);
+					String title = theme.getThemeID();
+					Intent intent = new Intent(home.this, task.class);
+					intent.putExtra("themeID", title);
+					//Toast.makeText(getApplicationContext(), title,3).show();
+					startActivity(intent);
+
+				}
+			});
+		
+			useIcon.setImageBitmap(user.getIcon());
+			dialog.dismiss();
 		}
-
 	}
-
 }

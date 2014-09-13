@@ -1,0 +1,12 @@
+m
+mbin
+mbin/classes/android/support/v7/appcompat
+rbin/classes/com/web/android_sl
+mbin/classes/com/web/android_sl/http
+mbin/classes/com/web/android_sl/json
+mbin/dexedLibs
+mgen/android/support/v7/appcompat
+mgen/com/web/android_sl
+rsrc/com/web/android_sl
+msrc/com/web/android_sl/http
+msrc/com/web/android_sl/json

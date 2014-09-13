@@ -20,7 +20,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 		// TODO Auto-generated method stub
 		String sql = "Create Table sessionTable(ID integer primary key autoincrement,session varchar(50))";
 		db.execSQL(sql);
-		db.close();
+		//db.close();
 	}
 
 	@Override

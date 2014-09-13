@@ -1,5 +1,6 @@
 package com.web.android_sl.http;
 
+import android.content.ContentUris;
 import android.content.Context;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.DefaultClientConnection;
@@ -30,6 +32,8 @@ import com.web.android_sl.utils.ContextUtil;
 
 import android.R.integer;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceActivity.Header;
@@ -75,7 +79,7 @@ public class HttpUtils {
 
 					String result = EntityUtils.toString(response.getEntity(),
 							"UTF-8");
-					 Log.i("string", result);
+					Log.i("string", result);
 					String values = JsonTools.getKey("code", result);
 					Log.i("string", values);
 					// 登录成功
@@ -117,10 +121,9 @@ public class HttpUtils {
 		return false;
 	}
 
-	
 	public static String getUserInfo() {
 		final String path = "http://www.yuluhuang.com/ashx/MyHomeHandler.ashx?flag=myhome";
-		String  result;
+		String result;
 		SessionService sessionService = new SessionService(
 				ContextUtil.getInstance());
 		String session = sessionService.getSession();
@@ -134,10 +137,9 @@ public class HttpUtils {
 			response = httpClient.execute(httpPost);
 			if (response.getStatusLine().getStatusCode() == 200) {
 
-				 result = EntityUtils.toString(response.getEntity(),
-						"UTF-8");
-				 String values = JsonTools.getKey("data", result);
-					Log.i("string", values);
+				result = EntityUtils.toString(response.getEntity(), "UTF-8");
+				String values = JsonTools.getKey("data", result);
+				Log.i("string", values);
 				return values;
 			}
 		} catch (ClientProtocolException e) {
@@ -150,13 +152,13 @@ public class HttpUtils {
 
 		return null;
 	}
-	
+
 	/**
-	 * 判断是否为登录状态  暂未使用
+	 * 判断是否为登录状态 暂未使用
 	 */
-	public void islogin(){
+	public void islogin() {
 		final String path = "http://www.yuluhuang.com/ashx/LoginHandler.ashx?flag=islogin";
-		String  result;
+		String result;
 		SessionService sessionService = new SessionService(
 				ContextUtil.getInstance());
 		String session = sessionService.getSession();
@@ -169,13 +171,12 @@ public class HttpUtils {
 			response = httpClient.execute(httpPost);
 			if (response.getStatusLine().getStatusCode() == 200) {
 
-				 result = EntityUtils.toString(response.getEntity(),
-						"UTF-8");
-				 String values = JsonTools.getKey("code", result);
-					if(!values.equals("111111")){
-						login("1","1");
-					}
-			
+				result = EntityUtils.toString(response.getEntity(), "UTF-8");
+				String values = JsonTools.getKey("code", result);
+				if (!values.equals("111111")) {
+					login("1", "1");
+				}
+
 			}
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
@@ -184,5 +185,114 @@ public class HttpUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public static String getIconPath(String key) {
+		final String path = "http://www.yuluhuang.com/ashx/qn_upload.ashx?flag=downToken&key="
+				+ key;
+		String values = "";
+		SessionService sessionService = new SessionService(
+				ContextUtil.getInstance());
+		String session = sessionService.getSession();
+
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpPost httpPost = new HttpPost(path);
+		httpPost.setHeader("Cookie", session);
+		HttpResponse response;
+		try {
+			response = httpClient.execute(httpPost);
+			if (response.getStatusLine().getStatusCode() == 200) {
+
+				String result = EntityUtils.toString(response.getEntity(),
+						"UTF-8");
+				values = JsonTools.getKey("key", result);
+			}
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return values;
+	}
+
+	public static Bitmap getBitmapForIconPath(String iconPath) {
+		Bitmap bitmap = null;
+		InputStream inputStream = null;
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpGet httpGet = new HttpGet(iconPath);
+		HttpResponse httpResponse;
+		try {
+			httpResponse = httpClient.execute(httpGet);
+			if (httpResponse.getStatusLine().getStatusCode() == 200) {
+				HttpEntity httpEntity = httpResponse.getEntity();
+				byte[] data = EntityUtils.toByteArray(httpEntity);
+
+				bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+			}
+
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return bitmap;
+	}
+
+	public static String getTaskInfo(String themeID) {
+		// TODO Auto-generated method stub
+		String path = "http://www.yuluhuang.com/ashx/MyHomeHandler.ashx";
+
+		String value = "";
+		SessionService service = new SessionService(ContextUtil.getInstance());
+
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpPost httpPost = new HttpPost(path);
+
+		HttpResponse response;
+		try {
+			// 3.构建请求实体的数据
+			List<NameValuePair> paras = new ArrayList<NameValuePair>();
+			paras.add(new BasicNameValuePair("flag", "zuopinfo"));
+			paras.add(new BasicNameValuePair("id", themeID));
+			// 4.构建实体
+			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(paras,
+					"utf-8");
+
+			// 5.把实体放入请求对象
+			httpPost.setEntity(entity);
+			//设置cookie
+			httpPost.setHeader("Cookie", service.getSession());
+			// 6.执行请求
+			response = httpClient.execute(httpPost);
+			if (response.getStatusLine().getStatusCode() == 200) {
+
+				String result = EntityUtils.toString(response.getEntity(),
+						"UTF-8");
+				value =JsonTools.getKey("task",JsonTools.getKey("data", JsonTools.getKey("data", result)));
+			}
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return value;
 	}
 }

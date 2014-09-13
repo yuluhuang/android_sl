@@ -1,6 +1,5 @@
 package com.web.android_sl;
 
-import android.R.integer;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,6 +47,4 @@ public class index extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-
 }
