@@ -60,7 +60,7 @@ public class ImageLoader {
 	 *            LruCache的键 网络上下载的bitmap对象
 	 */
 	public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
-		if (getBitmaoFromMemoryCache(key) == null) {
+		if (getBitmapFromMemoryCache(key) == null) {
 			mMemoryCache.put(key, bitmap);
 		}
 	}
@@ -72,7 +72,7 @@ public class ImageLoader {
 	 *            LruCache 的键 图片的url地址
 	 * @return 对用传入键的bitmap对象，或者null
 	 */
-	public  Bitmap getBitmaoFromMemoryCache(String key) {
+	public  Bitmap getBitmapFromMemoryCache(String key) {
 		// TODO Auto-generated method stub
 		return mMemoryCache.get(key);
 	}

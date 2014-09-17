@@ -5,11 +5,17 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.web.android_sl.domain.Item;
 import com.web.android_sl.domain.Task;
 import com.web.android_sl.domain.Theme;
 import com.web.android_sl.domain.User;
 import com.web.android_sl.http.HttpUtils;
+
+import android.R.integer;
 import android.graphics.Bitmap;
+import android.inputmethodservice.Keyboard.Key;
+import android.util.Log;
 
 public class JsonTools {
 
@@ -51,7 +57,7 @@ public class JsonTools {
 				user.setName(jsonObject3.getString("name"));
 				String icon = jsonObject3.getString("icon");
 				Bitmap bitmap = null;
-				//是否有图片
+				// 是否有图片
 				if (icon.length() > 0) {
 					String iconPath = HttpUtils.getIconPath(icon);// 获得下载token
 					bitmap = HttpUtils.getBitmapForIconPath(iconPath);// 下载
@@ -179,6 +185,31 @@ public class JsonTools {
 		}
 
 		return taskList;
+	}
+
+	public static List<Item> getItemList(String info) {
+
+		JSONArray jsonArray;
+		List<Item> itemList = new ArrayList<>();
+		try {
+			jsonArray = new JSONArray(info);
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				Item item = new Item();
+				item.setOldName(jsonObject.getString("oldName"));
+
+				item.setPath(HttpUtils.getIconPath(jsonObject
+						.getString("path1")));
+				item.setTitle(jsonObject.getString("title"));
+				item.setRemark(jsonObject.getString("remark"));
+				itemList.add(item);
+
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return itemList;
 	}
 
 	// public static List<HashMap<String, Object>> getTaskList(List<Task>

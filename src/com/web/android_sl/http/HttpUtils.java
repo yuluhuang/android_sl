@@ -291,8 +291,55 @@ public class HttpUtils {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			
 		}
 
+		return value;
+	}
+	
+	
+	public static String getItemInfo(String taskID) {
+		// TODO Auto-generated method stub
+		String path = "http://www.yuluhuang.com/ashx/playerHandler.ashx";
+
+		String value = "";
+		SessionService service = new SessionService(ContextUtil.getInstance());
+
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpPost httpPost = new HttpPost(path);
+
+		HttpResponse response;
+		try {
+			// 3.构建请求实体的数据
+			List<NameValuePair> paras = new ArrayList<NameValuePair>();
+			paras.add(new BasicNameValuePair("flag", "getplayer"));
+			paras.add(new BasicNameValuePair("id", taskID));
+			// 4.构建实体
+			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(paras,
+					"utf-8");
+
+			// 5.把实体放入请求对象
+			httpPost.setEntity(entity);
+			//设置cookie
+			httpPost.setHeader("Cookie", service.getSession());
+			// 6.执行请求
+			response = httpClient.execute(httpPost);
+			if (response.getStatusLine().getStatusCode() == 200) {
+
+				String result = EntityUtils.toString(response.getEntity(),
+						"UTF-8");
+				value =JsonTools.getKey("items",JsonTools.getKey("data", JsonTools.getKey("data", result)));
+			}
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			
+		}
 		return value;
 	}
 }

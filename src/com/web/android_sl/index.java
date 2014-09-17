@@ -38,7 +38,7 @@ public class index extends Activity {
 		int id=item.getItemId();
 		switch (id) {
 		case 1:
-			Intent intent=new Intent(index.this,home.class);
+			Intent intent=new Intent(index.this,usercenter.class);
 			startActivity(intent);
 			break;
 

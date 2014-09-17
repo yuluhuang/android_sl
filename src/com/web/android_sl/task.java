@@ -70,13 +70,13 @@ public class task extends Activity {
 					// TODO Auto-generated method stub
 					Task t=taskList.get(position);
 					String taskID=t.getTaskID();
-					Intent intent = new Intent(task.this,fallpic.class);
+					
+					Intent intent = new Intent(task.this,videoPlayer.class);
+					intent.putExtra("taskID", taskID);
 					startActivity(intent);
 				}
-				
 			});
 			dialog.dismiss();
-
 		}
 
 		@Override

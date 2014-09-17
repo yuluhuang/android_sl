@@ -1094,7 +1094,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f050016;
         public static final int action_menu_presenter=0x7f050017;
         public static final int action_mode_close_button=0x7f050024;
-        public static final int action_settings=0x7f05004d;
+        public static final int action_settings=0x7f05005b;
         public static final int activity_chooser_view_content=0x7f050025;
         public static final int always=0x7f05000b;
         public static final int beginning=0x7f050011;
@@ -1125,6 +1125,18 @@ containing a value of this type.
         public static final int login_user_input=0x7f050046;
         public static final int middle=0x7f050012;
         public static final int my_scroll_view=0x7f05003c;
+        public static final int mycollect_image=0x7f050052;
+        public static final int mycollect_layout=0x7f050051;
+        public static final int mycollect_text=0x7f050053;
+        public static final int mydetail_image=0x7f050058;
+        public static final int mydetail_layout=0x7f050057;
+        public static final int mydetail_text=0x7f050059;
+        public static final int myhome_image=0x7f05004f;
+        public static final int myhome_layout=0x7f05004e;
+        public static final int myhome_text=0x7f050050;
+        public static final int myinfo_image=0x7f050055;
+        public static final int myinfo_layout=0x7f050054;
+        public static final int myinfo_text=0x7f050056;
         public static final int never=0x7f050009;
         public static final int none=0x7f050010;
         public static final int normal=0x7f050000;
@@ -1159,7 +1171,9 @@ containing a value of this type.
         public static final int up=0x7f050021;
         public static final int useIcon=0x7f050040;
         public static final int useLogo=0x7f050003;
+        public static final int usercenter=0x7f05004d;
         public static final int username=0x7f050047;
+        public static final int videoView1=0x7f05005a;
         public static final int withText=0x7f05000c;
     }
     public static final class integer {
@@ -1216,11 +1230,18 @@ containing a value of this type.
         public static final int fallpic=0x7f030019;
         public static final int home=0x7f03001a;
         public static final int home_bottom=0x7f03001b;
-        public static final int home_top=0x7f03001c;
-        public static final int login=0x7f03001d;
-        public static final int login2=0x7f03001e;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001f;
-        public static final int task=0x7f030020;
+        public static final int item=0x7f03001c;
+        public static final int item_item=0x7f03001d;
+        public static final int login=0x7f03001e;
+        public static final int login2=0x7f03001f;
+        public static final int mycollect_fragment=0x7f030020;
+        public static final int mydetail_fragment=0x7f030021;
+        public static final int myhome_fragment=0x7f030022;
+        public static final int myinfo_fragment=0x7f030023;
+        public static final int support_simple_spinner_dropdown_item=0x7f030024;
+        public static final int task=0x7f030025;
+        public static final int usercenter=0x7f030026;
+        public static final int video_view=0x7f030027;
     }
     public static final class menu {
         public static final int index=0x7f0c0000;
